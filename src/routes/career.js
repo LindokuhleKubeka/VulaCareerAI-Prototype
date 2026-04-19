@@ -1,10 +1,23 @@
 import { Router } from 'express';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { embedQuery, vectorSearch, buildAnalysePrompt, buildTailorPrompt } from '../lib/rag.js';
 import { runEval, saveEval } from '../lib/eval.js';
 
 const router = Router();
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+function geminiUrl() {
+  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`;
+}
+
+async function callGemini(prompt) {
+  const res = await fetch(geminiUrl(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+  });
+  if (!res.ok) throw new Error(`Gemini ${res.status}: ${await res.text()}`);
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+}
 
 function sse(res, event, data) {
   res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
@@ -38,16 +51,7 @@ router.post('/analyse', async (req, res) => {
 
     sse(res, 'status', { message: 'Generating personalised career analysis...' });
     const prompt = buildAnalysePrompt(cv, matchedJobs);
-    let fullResponse = '';
-
-    const geminiRes = await fetch(GEMINI_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-    });
-    if (!geminiRes.ok) throw new Error(`Gemini error ${geminiRes.status}: ${await geminiRes.text()}`);
-    const geminiData = await geminiRes.json();
-    fullResponse = geminiData.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+    const fullResponse = await callGemini(prompt);
     sse(res, 'token', { text: fullResponse });
     sse(res, 'done', { input_tokens: 0, output_tokens: 0 });
     res.end();
@@ -58,7 +62,7 @@ router.post('/analyse', async (req, res) => {
     });
   } catch (err) {
     console.error('Analyse error:', err.message);
-    sse(res, 'error', { message: 'Something went wrong. Please try again.' });
+    sse(res, 'error', { message: err.message });
     res.end();
   }
 });
@@ -75,16 +79,7 @@ router.post('/tailor', async (req, res) => {
     const targetJob = jobResult.rows[0];
     sse(res, 'status', { message: `Tailoring CV for ${targetJob.title} at ${targetJob.company}...` });
 
-    let fullResponse = '';
-    const tailorPrompt = buildTailorPrompt(cv, targetJob);
-    const geminiRes = await fetch(GEMINI_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: tailorPrompt }] }] }),
-    });
-    if (!geminiRes.ok) throw new Error(`Gemini error ${geminiRes.status}: ${await geminiRes.text()}`);
-    const geminiData = await geminiRes.json();
-    fullResponse = geminiData.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+    const fullResponse = await callGemini(buildTailorPrompt(cv, targetJob));
     sse(res, 'token', { text: fullResponse });
     sse(res, 'done', { input_tokens: 0, output_tokens: 0 });
     res.end();
@@ -95,7 +90,7 @@ router.post('/tailor', async (req, res) => {
     });
   } catch (err) {
     console.error('Tailor error:', err.message);
-    sse(res, 'error', { message: 'Something went wrong.' });
+    sse(res, 'error', { message: err.message });
     res.end();
   }
 });
