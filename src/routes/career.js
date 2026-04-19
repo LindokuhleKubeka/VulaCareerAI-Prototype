@@ -40,15 +40,15 @@ router.post('/analyse', async (req, res) => {
     const prompt = buildAnalysePrompt(cv, matchedJobs);
     let fullResponse = '';
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
-    const result = await model.generateContentStream(prompt);
-
-    for await (const chunk of result.stream) {
-      const token = chunk.text();
-      fullResponse += token;
-      sse(res, 'token', { text: token });
-    }
-
+    const geminiRes = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+    });
+    if (!geminiRes.ok) throw new Error(`Gemini error ${geminiRes.status}: ${await geminiRes.text()}`);
+    const geminiData = await geminiRes.json();
+    fullResponse = geminiData.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+    sse(res, 'token', { text: fullResponse });
     sse(res, 'done', { input_tokens: 0, output_tokens: 0 });
     res.end();
 
@@ -76,15 +76,16 @@ router.post('/tailor', async (req, res) => {
     sse(res, 'status', { message: `Tailoring CV for ${targetJob.title} at ${targetJob.company}...` });
 
     let fullResponse = '';
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
-    const result = await model.generateContentStream(buildTailorPrompt(cv, targetJob));
-
-    for await (const chunk of result.stream) {
-      const token = chunk.text();
-      fullResponse += token;
-      sse(res, 'token', { text: token });
-    }
-
+    const tailorPrompt = buildTailorPrompt(cv, targetJob);
+    const geminiRes = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: tailorPrompt }] }] }),
+    });
+    if (!geminiRes.ok) throw new Error(`Gemini error ${geminiRes.status}: ${await geminiRes.text()}`);
+    const geminiData = await geminiRes.json();
+    fullResponse = geminiData.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+    sse(res, 'token', { text: fullResponse });
     sse(res, 'done', { input_tokens: 0, output_tokens: 0 });
     res.end();
 
