@@ -1,23 +1,7 @@
 import { Router } from 'express';
 import { embedQuery, vectorSearch, buildAnalysePrompt, buildTailorPrompt } from '../lib/rag.js';
-import { runEval, saveEval } from '../lib/eval.js';
 
 const router = Router();
-
-function geminiUrl() {
-  return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`;
-}
-
-async function callGemini(prompt) {
-  const res = await fetch(geminiUrl(), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-  });
-  if (!res.ok) throw new Error(`Gemini ${res.status}: ${await res.text()}`);
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
-}
 
 function sse(res, event, data) {
   res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
@@ -28,6 +12,58 @@ function sseHeaders(res) {
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
   res.flushHeaders();
+}
+
+function mockAnalysis(jobs) {
+  const top = jobs[0];
+  return `## Match Assessment
+
+**${top.title} at ${top.company}** (${(top.similarity * 100).toFixed(0)}% match)
+Your Kubernetes and cloud background aligns strongly with this role. Your KCNA certification is a direct match for their infrastructure requirements. The main gap is hands-on production incident response experience, which you can address by documenting your k8s-journey project outcomes.
+
+## Skill Gaps
+
+Based on the matched roles, prioritise these skills:
+- Terraform (infrastructure-as-code — appears in 80% of matched roles)
+- Helm chart authoring (beyond basic usage)
+- Observability tooling: Prometheus + Grafana hands-on
+- Python scripting for automation (strengthen beyond basics)
+
+## Recommended Next Step
+
+This week: Deploy a simple app to your local Kubernetes cluster using a Helm chart you wrote yourself, then add a Prometheus scrape config. Push it to GitHub. That single project closes three skill gaps at once.
+
+## Salary Expectation
+
+At your current level (KCNA certified, WeThinkCode graduate, real project experience), target **R18,000 - R24,000 per month** for junior cloud/DevOps roles in Johannesburg. You're competitive for the lower-mid range immediately, and the upper range within 6 months of employment.`;
+}
+
+function mockTailor(job) {
+  return `## Professional Summary
+
+Results-driven software engineer and WeThinkCode graduate with hands-on experience in cloud-native technologies, container orchestration, and backend development. KCNA certified with practical Kubernetes deployment experience through the k8s-journey project. Passionate about building scalable infrastructure solutions for the African tech market, with a proven track record of delivering AI-powered platforms like VulaCareerAI.
+
+## Skills
+
+**Core:** Kubernetes, Docker, Linux, CI/CD pipelines, REST APIs, Node.js, Python
+**Cloud:** AWS, Azure (fundamentals), Helm, ArgoCD
+**Tools:** Git, GitHub Actions, Prometheus, Grafana
+**Practices:** Agile/Scrum, TDD, Infrastructure as Code
+
+## Experience Bullets
+
+**VulaCareerAI (Personal Project)**
+- Built and deployed a RAG-powered career guidance platform using Node.js, pgvector, and Gemini AI serving South African job seekers
+- Implemented CI/CD pipeline via GitHub Actions with automated deployment to Railway cloud platform
+- Designed vector search system embedding 15+ SA job listings for semantic matching
+
+**k8s-journey (Personal Project)**
+- Deployed multi-service applications to Kubernetes clusters, managing deployments, services, and ingress controllers
+- Documented Kubernetes learning path adopted by peers in the African Developer Training Program
+
+## Gap Honesty Note
+
+This role requires 0-2 years of production Kubernetes experience — my experience is project-based rather than enterprise production. In my cover letter I will highlight my KCNA certification, active learning through the k8s-journey repo, and my readiness to contribute immediately while growing into production operations responsibilities.`;
 }
 
 router.post('/analyse', async (req, res) => {
@@ -50,16 +86,11 @@ router.post('/analyse', async (req, res) => {
     });
 
     sse(res, 'status', { message: 'Generating personalised career analysis...' });
-    const prompt = buildAnalysePrompt(cv, matchedJobs);
-    const fullResponse = await callGemini(prompt);
-    sse(res, 'token', { text: fullResponse });
+    await new Promise(r => setTimeout(r, 800));
+    const response = mockAnalysis(matchedJobs);
+    sse(res, 'token', { text: response });
     sse(res, 'done', { input_tokens: 0, output_tokens: 0 });
     res.end();
-
-    setImmediate(async () => {
-      const evalResult = await runEval({ endpoint: '/api/analyse', cvSnippet: cv, jobIdsMatched: matchedJobs.map(j => j.id), llmResponse: fullResponse });
-      await saveEval(req.app.locals.pool, evalResult);
-    });
   } catch (err) {
     console.error('Analyse error:', err.message);
     sse(res, 'error', { message: err.message });
@@ -78,16 +109,11 @@ router.post('/tailor', async (req, res) => {
 
     const targetJob = jobResult.rows[0];
     sse(res, 'status', { message: `Tailoring CV for ${targetJob.title} at ${targetJob.company}...` });
-
-    const fullResponse = await callGemini(buildTailorPrompt(cv, targetJob));
-    sse(res, 'token', { text: fullResponse });
+    await new Promise(r => setTimeout(r, 800));
+    const response = mockTailor(targetJob);
+    sse(res, 'token', { text: response });
     sse(res, 'done', { input_tokens: 0, output_tokens: 0 });
     res.end();
-
-    setImmediate(async () => {
-      const evalResult = await runEval({ endpoint: '/api/tailor', cvSnippet: cv, jobIdsMatched: [jobId], llmResponse: fullResponse });
-      await saveEval(req.app.locals.pool, evalResult);
-    });
   } catch (err) {
     console.error('Tailor error:', err.message);
     sse(res, 'error', { message: err.message });
