@@ -1,0 +1,390 @@
+[
+  {
+    "id": "job_001",
+    "title": "Junior Software Developer",
+    "company": "Sybrin",
+    "location": "Johannesburg, Gauteng",
+    "type": "Full-time",
+    "description": "Build enterprise-grade software for the African financial sector using Java and Spring Boot. Develop and maintain backend services, write unit and integration tests, and participate in agile ceremonies. Work on identity management, document processing, and workflow automation platforms used by major SA banks.",
+    "requirements": [
+      "Java",
+      "Spring Boot",
+      "REST APIs",
+      "SQL",
+      "Git",
+      "Agile"
+    ],
+    "nice_to_have": [
+      "Docker",
+      "Kubernetes",
+      "AWS",
+      "Python"
+    ],
+    "education": "Diploma or Degree in Computer Science or IT",
+    "experience": "0-2 years",
+    "salary_range": "R15,000 - R22,000 per month",
+    "source": "careers24"
+  },
+  {
+    "id": "job_002",
+    "title": "Junior Python Developer",
+    "company": "Datafin Recruitment",
+    "location": "Cape Town, Western Cape",
+    "type": "Full-time",
+    "description": "Work within a fintech company building data pipelines and internal tooling. Write Python scripts, maintain ETL pipelines, support data analysts with automation, and contribute to API development using FastAPI or Flask.",
+    "requirements": [
+      "Python",
+      "FastAPI or Flask",
+      "PostgreSQL",
+      "Git",
+      "REST APIs"
+    ],
+    "nice_to_have": [
+      "Pandas",
+      "Airflow",
+      "Docker",
+      "AWS Lambda"
+    ],
+    "education": "Matric plus relevant certification or Degree",
+    "experience": "0-1 years",
+    "salary_range": "R14,000 - R20,000 per month",
+    "source": "datafin"
+  },
+  {
+    "id": "job_003",
+    "title": "Junior DevOps Engineer",
+    "company": "RAS Technology",
+    "location": "Johannesburg, Gauteng",
+    "type": "Full-time",
+    "description": "Support cloud infrastructure with CI/CD pipelines, container orchestration, and monitoring. Work with Docker and Kubernetes to deploy microservices, assist with AWS cost optimisation, write infrastructure-as-code using Terraform, and maintain GitLab pipelines.",
+    "requirements": [
+      "Linux",
+      "Docker",
+      "Kubernetes",
+      "CI/CD",
+      "Git",
+      "Bash"
+    ],
+    "nice_to_have": [
+      "Terraform",
+      "AWS",
+      "Prometheus",
+      "Grafana",
+      "Helm"
+    ],
+    "education": "Diploma or Degree in IT or Cloud. KCNA or CKA a strong advantage.",
+    "experience": "0-2 years",
+    "salary_range": "R18,000 - R26,000 per month",
+    "source": "pnet"
+  },
+  {
+    "id": "job_004",
+    "title": "ML Engineer Intern",
+    "company": "Sybrin",
+    "location": "Johannesburg, Gauteng",
+    "type": "Internship",
+    "description": "Join the AI/ML team working on document intelligence and OCR systems. Build and evaluate machine learning models using PyTorch and scikit-learn, preprocess data pipelines, integrate models into REST APIs, and contribute to model monitoring. Direct pathway to a full-time ML Engineer role.",
+    "requirements": [
+      "Python",
+      "PyTorch or TensorFlow",
+      "scikit-learn",
+      "NumPy",
+      "Pandas",
+      "Git"
+    ],
+    "nice_to_have": [
+      "Computer Vision",
+      "HuggingFace",
+      "FastAPI",
+      "Docker",
+      "MLflow"
+    ],
+    "education": "Degree in Computer Science or Data Science",
+    "experience": "0 years \u2014 internship",
+    "salary_range": "R8,000 - R12,000 per month stipend",
+    "source": "sybrin_direct"
+  },
+  {
+    "id": "job_005",
+    "title": "Junior Data Analyst",
+    "company": "Standard Bank",
+    "location": "Johannesburg, Gauteng",
+    "type": "Full-time",
+    "description": "Transform raw business data into actionable insights. Write SQL queries, build dashboards in Power BI or Tableau, clean and validate data, produce reports for business stakeholders, and identify trends in customer behaviour data.",
+    "requirements": [
+      "SQL",
+      "Excel",
+      "Power BI or Tableau",
+      "Data analysis",
+      "Communication"
+    ],
+    "nice_to_have": [
+      "Python",
+      "R",
+      "Azure",
+      "DAX"
+    ],
+    "education": "Degree in Statistics, Commerce, or Data Science",
+    "experience": "0-1 years",
+    "salary_range": "R16,000 - R22,000 per month",
+    "source": "linkedin"
+  },
+  {
+    "id": "job_006",
+    "title": "Graduate Software Engineer",
+    "company": "Investec",
+    "location": "Johannesburg, Gauteng",
+    "type": "Full-time",
+    "description": "Two-year graduate programme rotating across engineering squads in private banking technology. Build features for internal banking platforms, participate in code reviews, write tests, and be mentored by senior engineers using Java, React, and Azure.",
+    "requirements": [
+      "Java or JavaScript",
+      "REST APIs",
+      "Git",
+      "Agile"
+    ],
+    "nice_to_have": [
+      "React",
+      "Azure",
+      "Spring Boot",
+      "TDD"
+    ],
+    "education": "Degree in Computer Science or Engineering (minimum 65% average)",
+    "experience": "0 years \u2014 graduate programme",
+    "salary_range": "R25,000 - R32,000 per month",
+    "source": "investec_careers"
+  },
+  {
+    "id": "job_007",
+    "title": "Junior Cloud Engineer",
+    "company": "Prime South Africa",
+    "location": "Johannesburg, Gauteng",
+    "type": "Full-time",
+    "description": "Work on cloud infrastructure for enterprise clients in retail, mining, and financial services. Provision cloud resources on AWS and Azure, support Kubernetes cluster operations, write automation scripts, troubleshoot infrastructure issues, and contribute to cloud migration projects.",
+    "requirements": [
+      "AWS or Azure",
+      "Linux",
+      "Docker",
+      "Python or Bash",
+      "Networking basics"
+    ],
+    "nice_to_have": [
+      "Kubernetes",
+      "Terraform",
+      "KCNA or AZ-900",
+      "Ansible"
+    ],
+    "education": "Diploma or Degree in IT or Cloud. Certifications valued.",
+    "experience": "0-2 years",
+    "salary_range": "R17,000 - R24,000 per month",
+    "source": "prime_sa"
+  },
+  {
+    "id": "job_008",
+    "title": "Backend Developer (Node.js)",
+    "company": "Jumo",
+    "location": "Cape Town, Western Cape",
+    "type": "Full-time",
+    "description": "Build scalable APIs serving financial products to underserved markets across Africa. Design and implement RESTful services in Node.js and TypeScript, write PostgreSQL queries, contribute to TDD practices, and work in a fully remote-first team.",
+    "requirements": [
+      "Node.js",
+      "TypeScript",
+      "REST APIs",
+      "PostgreSQL",
+      "Git",
+      "TDD"
+    ],
+    "nice_to_have": [
+      "AWS",
+      "Redis",
+      "Docker",
+      "GraphQL",
+      "Jest"
+    ],
+    "education": "Degree or strong portfolio of shipped projects",
+    "experience": "1-3 years",
+    "salary_range": "R22,000 - R35,000 per month",
+    "source": "jumo_careers"
+  },
+  {
+    "id": "job_009",
+    "title": "Junior AI/NLP Engineer",
+    "company": "Praelexis",
+    "location": "Stellenbosch, Western Cape",
+    "type": "Full-time",
+    "description": "Work on applied NLP and machine learning projects for SA clients in finance, insurance, and healthcare. Build text classification, named entity recognition, and document summarisation systems using HuggingFace transformer models.",
+    "requirements": [
+      "Python",
+      "NLP",
+      "HuggingFace Transformers",
+      "PyTorch",
+      "scikit-learn",
+      "Git"
+    ],
+    "nice_to_have": [
+      "LoRA",
+      "LangChain",
+      "FastAPI",
+      "Docker",
+      "South African language data"
+    ],
+    "education": "Honours or Masters in Computer Science or AI",
+    "experience": "0-2 years",
+    "salary_range": "R20,000 - R30,000 per month",
+    "source": "praelexis_careers"
+  },
+  {
+    "id": "job_010",
+    "title": "Junior Cloud Engineer",
+    "company": "Discovery Health",
+    "location": "Johannesburg, Gauteng",
+    "type": "Full-time",
+    "description": "Support the internal developer platform team building golden paths for application teams. Maintain Kubernetes clusters, manage Helm chart releases, contribute to IaC using Terraform, build developer documentation, and assist with AWS cost reporting.",
+    "requirements": [
+      "Kubernetes",
+      "Docker",
+      "Linux",
+      "Git",
+      "Bash or Python"
+    ],
+    "nice_to_have": [
+      "Helm",
+      "Terraform",
+      "ArgoCD",
+      "AWS",
+      "Backstage"
+    ],
+    "education": "Diploma or Degree in IT or Cloud. KCNA or CKA preferred.",
+    "experience": "0-2 years",
+    "salary_range": "R20,000 - R28,000 per month",
+    "source": "discovery_careers"
+  },
+  {
+    "id": "job_011",
+    "title": "Graduate Data Engineer",
+    "company": "Mukuru",
+    "location": "Cape Town, Western Cape",
+    "type": "Full-time",
+    "description": "Build pipelines processing millions of remittance transactions across Africa. Build and maintain ETL pipelines using Python and Apache Airflow, manage data in BigQuery and PostgreSQL, and ensure data quality across ingestion layers.",
+    "requirements": [
+      "Python",
+      "SQL",
+      "ETL pipelines",
+      "Git",
+      "Data modelling"
+    ],
+    "nice_to_have": [
+      "Apache Airflow",
+      "BigQuery",
+      "dbt",
+      "Spark",
+      "Docker"
+    ],
+    "education": "Degree in Computer Science or Data Science",
+    "experience": "0-1 years",
+    "salary_range": "R18,000 - R25,000 per month",
+    "source": "linkedin"
+  },
+  {
+    "id": "job_012",
+    "title": "Junior Frontend Developer",
+    "company": "Yoco",
+    "location": "Cape Town, Western Cape",
+    "type": "Full-time",
+    "description": "Build accessible interfaces for Yoco merchant-facing web products. Work in a React and TypeScript codebase, implement designs from Figma, write component tests, and contribute to the shared component library.",
+    "requirements": [
+      "React",
+      "TypeScript",
+      "HTML/CSS",
+      "Git",
+      "REST APIs"
+    ],
+    "nice_to_have": [
+      "Jest",
+      "Storybook",
+      "GraphQL",
+      "Next.js"
+    ],
+    "education": "Degree or bootcamp graduate with strong portfolio",
+    "experience": "0-2 years",
+    "salary_range": "R18,000 - R28,000 per month",
+    "source": "yoco_careers"
+  },
+  {
+    "id": "job_013",
+    "title": "Site Reliability Engineer (Graduate)",
+    "company": "Takealot",
+    "location": "Cape Town, Western Cape",
+    "type": "Full-time",
+    "description": "Keep South Africa's largest e-commerce platform running at scale. Work on monitoring and alerting using Prometheus and Grafana, assist with incident response, build internal tooling in Python, and contribute to capacity planning.",
+    "requirements": [
+      "Linux",
+      "Python or Go",
+      "Monitoring",
+      "Git",
+      "Networking"
+    ],
+    "nice_to_have": [
+      "Kubernetes",
+      "Prometheus",
+      "Grafana",
+      "Terraform",
+      "AWS"
+    ],
+    "education": "Degree in Computer Science or Engineering",
+    "experience": "0-1 years",
+    "salary_range": "R22,000 - R30,000 per month",
+    "source": "takealot_careers"
+  },
+  {
+    "id": "job_014",
+    "title": "AI Integration Developer",
+    "company": "Britehouse",
+    "location": "Johannesburg, Gauteng",
+    "type": "Full-time",
+    "description": "Integrate large language model APIs into enterprise client workflows. Build RAG pipelines, LLM-powered document search tools, and AI-assisted workflow automation using Python and Azure OpenAI. Deliver proof-of-concepts for Deloitte clients.",
+    "requirements": [
+      "Python",
+      "REST APIs",
+      "LLM APIs",
+      "Git",
+      "SQL"
+    ],
+    "nice_to_have": [
+      "LangChain",
+      "Azure",
+      "RAG pipelines",
+      "Vector databases",
+      "Prompt engineering"
+    ],
+    "education": "Degree in Computer Science or related",
+    "experience": "0-2 years",
+    "salary_range": "R20,000 - R30,000 per month",
+    "source": "britehouse_careers"
+  },
+  {
+    "id": "job_015",
+    "title": "Junior Software Engineer \u2014 Fintech",
+    "company": "Peach Payments",
+    "location": "Cape Town, Western Cape",
+    "type": "Full-time",
+    "description": "Build payment infrastructure handling transactions across Africa. Implement features in Node.js and TypeScript, design and query PostgreSQL databases, write integration tests, and work on PCI-DSS compliant systems with high ownership.",
+    "requirements": [
+      "Node.js",
+      "TypeScript",
+      "PostgreSQL",
+      "REST APIs",
+      "Git",
+      "Testing"
+    ],
+    "nice_to_have": [
+      "Docker",
+      "AWS",
+      "Redis",
+      "Payment systems"
+    ],
+    "education": "Degree or demonstrable portfolio of backend projects",
+    "experience": "1-2 years",
+    "salary_range": "R22,000 - R34,000 per month",
+    "source": "peach_payments"
+  }
+]

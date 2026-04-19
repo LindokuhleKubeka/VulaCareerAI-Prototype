@@ -1,0 +1,26 @@
+{
+  "name": "vulacareerai-backend",
+  "version": "1.0.0",
+  "description": "VulaCareerAI — RAG-powered career guidance for South African job seekers",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "ingest": "node src/scripts/ingest-jobs.js",
+    "db:setup": "psql $DATABASE_URL -f src/lib/schema.sql"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
