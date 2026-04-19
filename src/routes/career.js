@@ -40,7 +40,7 @@ router.post('/analyse', async (req, res) => {
     const prompt = buildAnalysePrompt(cv, matchedJobs);
     let fullResponse = '';
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const result = await model.generateContentStream(prompt);
 
     for await (const chunk of result.stream) {
@@ -76,7 +76,7 @@ router.post('/tailor', async (req, res) => {
     sse(res, 'status', { message: `Tailoring CV for ${targetJob.title} at ${targetJob.company}...` });
 
     let fullResponse = '';
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     const result = await model.generateContentStream(buildTailorPrompt(cv, targetJob));
 
     for await (const chunk of result.stream) {
