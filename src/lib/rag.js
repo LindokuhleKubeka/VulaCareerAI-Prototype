@@ -2,6 +2,7 @@ const VOYAGE_MODEL = 'voyage-3-lite';
 const TOP_K = 5;
 
 export async function embedQuery(text) {
+  console.log('embedQuery called, key present:', !!process.env.VOYAGE_API_KEY);
   const res = await fetch('https://api.voyageai.com/v1/embeddings', {
     method: 'POST',
     headers: {
@@ -10,8 +11,11 @@ export async function embedQuery(text) {
     },
     body: JSON.stringify({ model: VOYAGE_MODEL, input: [text], input_type: 'query' }),
   });
-  if (!res.ok) throw new Error(`Voyage embed error ${res.status}: ${await res.text()}`);
-  const data = await res.json();
+  const resText = await res.text();
+  console.log('Voyage status:', res.status, resText.slice(0, 100));
+  if (!res.ok) throw new Error(`Voyage embed error ${res.status}: ${resText}`);
+  const data = JSON.parse(resText);
+
   return data.data[0].embedding;
 }
 
