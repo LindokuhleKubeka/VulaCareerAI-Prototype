@@ -15,6 +15,7 @@ function sseHeaders(res) {
 }
 
 function mockAnalysis(jobs) {
+  if (!jobs.length) return 'No matching jobs found. Try adding more detail to your CV.';
   const top = jobs[0];
   return `## Match Assessment
 
