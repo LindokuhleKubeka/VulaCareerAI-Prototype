@@ -1,11 +1,10 @@
 import { Router } from 'express';
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { embedQuery, vectorSearch, buildAnalysePrompt, buildTailorPrompt } from '../lib/rag.js';
 import { runEval, saveEval } from '../lib/eval.js';
 
 const router = Router();
-const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const CLAUDE_MODEL = 'claude-sonnet-4-20250514';
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 function sse(res, event, data) {
   res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
@@ -41,20 +40,16 @@ router.post('/analyse', async (req, res) => {
     const prompt = buildAnalysePrompt(cv, matchedJobs);
     let fullResponse = '';
 
-    const stream = claude.messages.stream({
-      model: CLAUDE_MODEL, max_tokens: 1024,
-      messages: [{ role: 'user', content: prompt }],
-    });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const result = await model.generateContentStream(prompt);
 
-    for await (const chunk of stream) {
-      if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
-        fullResponse += chunk.delta.text;
-        sse(res, 'token', { text: chunk.delta.text });
-      }
+    for await (const chunk of result.stream) {
+      const token = chunk.text();
+      fullResponse += token;
+      sse(res, 'token', { text: token });
     }
 
-    const final = await stream.finalMessage();
-    sse(res, 'done', { input_tokens: final.usage?.input_tokens, output_tokens: final.usage?.output_tokens });
+    sse(res, 'done', { input_tokens: 0, output_tokens: 0 });
     res.end();
 
     setImmediate(async () => {
@@ -81,20 +76,16 @@ router.post('/tailor', async (req, res) => {
     sse(res, 'status', { message: `Tailoring CV for ${targetJob.title} at ${targetJob.company}...` });
 
     let fullResponse = '';
-    const stream = claude.messages.stream({
-      model: CLAUDE_MODEL, max_tokens: 1500,
-      messages: [{ role: 'user', content: buildTailorPrompt(cv, targetJob) }],
-    });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const result = await model.generateContentStream(buildTailorPrompt(cv, targetJob));
 
-    for await (const chunk of stream) {
-      if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
-        fullResponse += chunk.delta.text;
-        sse(res, 'token', { text: chunk.delta.text });
-      }
+    for await (const chunk of result.stream) {
+      const token = chunk.text();
+      fullResponse += token;
+      sse(res, 'token', { text: token });
     }
 
-    const final = await stream.finalMessage();
-    sse(res, 'done', { input_tokens: final.usage?.input_tokens, output_tokens: final.usage?.output_tokens });
+    sse(res, 'done', { input_tokens: 0, output_tokens: 0 });
     res.end();
 
     setImmediate(async () => {
