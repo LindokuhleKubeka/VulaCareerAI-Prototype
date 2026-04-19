@@ -1,69 +1,147 @@
+# VulaCareerAI — Career Guidance Platform
 
-# VulaCareer AI — Career Guidance Prototype
-
-A prototype AI-powered career guidance tool built for the South African context. "Vula" (isiZulu: *to open*) — the concept is to open pathways for young South Africans navigating the tech job market by providing career direction based on their skills and interests.
+"Vula" (isiZulu: *to open*) — opening pathways for young South Africans navigating the tech job market.
 
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
-![AI](https://img.shields.io/badge/AI%2FML-Prototype-orange)
-![Status](https://img.shields.io/badge/Status-Prototype-yellow)
+![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Live-brightgreen)
 
-> ⚠️ This is an early-stage prototype. The core logic is functional; production features are on the roadmap below.
+> This project started as a prototype with rule-based keyword matching. It has since been rebuilt as a production RAG pipeline with vector search, streaming AI responses, and an LLM-as-judge eval layer.
+
+---
+
+## Live Demo
+
+- **Frontend:** https://vulacareerai-frontend-19lxrg517-lindokuhlekubekas-projects.vercel.app
+- **Backend API:** https://vulacareerai-prototype-production.up.railway.app/health
 
 ---
 
 ## The Problem
 
-Young South African developers — especially those from non-traditional backgrounds — often lack access to career guidance that reflects the local tech ecosystem. Generic career tools don't account for the South African job market, local companies, or African-language speakers.
+Young South African developers — especially those from non-traditional backgrounds — often lack access to career guidance that reflects the local tech ecosystem. Generic career tools don't account for the SA job market, local companies, or African-language speakers.
 
 ## What It Does
 
-- Takes a user's current skills, interests, and experience level as input
-- Maps input against a knowledge base of South African tech career pathways
-- Suggests relevant roles, learning resources, and local companies to target
+- Accepts a CV as input and semantically matches it against a database of real SA job listings
+- Uses vector embeddings (Voyage AI) + pgvector cosine similarity for accurate job matching
+- Generates personalised career analysis: match assessment, skill gaps, next steps, salary expectation
+- Tailors CV sections for a specific job on demand
+- Scores every AI response with an LLM-as-judge eval layer (relevance, tone, gap coverage)
 - Designed with future African-language support in mind (Zulu, Xhosa, Sotho)
 
-## How It Works
+---
 
-```
-User Input (skills + interests)
-          │
-          ▼
-  ┌───────────────┐
-  │ Input Parser  │  ← Normalises and categorises user data
-  └───────┬───────┘
-          │
-          ▼
-  ┌───────────────┐
-  │ Career Engine │  ← Rule-based matching against pathway knowledge base
-  └───────┬───────┘
-          │
-          ▼
-  ┌───────────────┐
-  │  Recommender  │  ← Returns ranked career paths + next steps
-  └───────────────┘
+## Architecture
+User CV → React Frontend (Vercel)
+↓ POST /api/analyse
+Express API (Railway)
+↓
+Voyage AI embedQuery()
+↓
+pgvector cosine search → Top 5 SA jobs
+↓
+Prompt builder → AI API → SSE streaming response
+↓ async
+LLM-as-judge eval → eval_logs (Postgres)
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React + Vite → Vercel |
+| Backend | Node.js + Express → Railway |
+| Database | PostgreSQL + pgvector |
+| Embeddings | Voyage AI (voyage-3-lite) |
+| AI | Gemini / Claude API (swappable) |
+| CI/CD | GitHub Actions + Railway + Vercel auto-deploy |
+| Eval | LLM-as-judge scoring → eval_logs table |
+
+---
+
+## API
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /health | Health check |
+| POST | /api/analyse | Analyse CV against SA job DB (SSE stream) |
+| POST | /api/tailor | Rewrite CV for a specific job (SSE stream) |
+| GET | /api/metrics | Eval scores, token costs, latency stats |
+
+```bash
+curl -X POST https://vulacareerai-prototype-production.up.railway.app/api/analyse \
+  -H "Content-Type: application/json" \
+  -d '{"cv": "WeThinkCode graduate. Python, Docker, Kubernetes KCNA certified."}' \
+  --no-buffer
 ```
 
-## Running the Prototype
+---
+
+## Project Structure
+VulaCareerAI-Prototype/
+├── server.js                  # Express entry point
+├── Dockerfile                 # Railway deployment
+├── railway.toml               # Railway config
+├── data/
+│   └── jobs-seed.json         # 15 real SA job listings
+└── src/
+├── lib/
+│   ├── schema.sql          # Postgres schema (jobs + eval_logs)
+│   ├── rag.js              # embedQuery, vectorSearch, buildPrompt
+│   └── eval.js             # LLM-as-judge + saveEval
+├── routes/
+│   └── career.js           # API route handlers
+└── scripts/
+└── ingest-jobs.js      # Job embedding + ingestion CLI
+---
+
+## Local Setup
 
 ```bash
 git clone https://github.com/LindokuhleKubeka/VulaCareerAI-Prototype.git
 cd VulaCareerAI-Prototype
-pip install -r requirements.txt
-python main.py
+npm install
+cp .env.example .env
+# Fill in ANTHROPIC_API_KEY or GEMINI_API_KEY, VOYAGE_API_KEY, DATABASE_URL
+npm run db:setup
+npm run ingest
+npm run dev
 ```
-
-## Roadmap
-
-- [ ] Integrate an LLM API (e.g. Anthropic Claude or Lelapa AI's Vulavula) for natural language input
-- [ ] Add isiZulu and isiXhosa language support via African NLP APIs
-- [ ] Build a simple web frontend (Flask or FastAPI)
-- [ ] Expand the knowledge base with South African-specific companies and roles
-- [ ] Add a salary range layer using local market data
-
-## Motivation
-
-Built as part of my broader interest in African-language AI and the South African tech ecosystem. The name references [Lelapa AI's Vulavula](https://lelapa.ai/) — an African NLP platform that I'd like to integrate into a future version of this project.
 
 ---
 
-*Feedback and contributions welcome — especially from anyone with knowledge of African language NLP or SA career pathways.*
+## Roadmap
+
+- [x] Rule-based career matching prototype (Python/Streamlit)
+- [x] Production RAG pipeline with pgvector semantic search
+- [x] Streaming AI responses via SSE
+- [x] LLM-as-judge eval layer with Postgres logging
+- [x] React frontend deployed on Vercel
+- [x] CI/CD via GitHub Actions
+- [ ] Real-time SA job scraping (Careers24, LinkedIn)
+- [ ] isiZulu and isiXhosa language support via Lelapa AI Vulavula
+- [ ] /api/metrics dashboard in frontend
+- [ ] Fine-tuned model on South African language data
+
+---
+
+## Motivation
+
+Built as part of my broader interest in African-language AI and the South African tech ecosystem. The name references [Lelapa AI's Vulavula](https://lelapa.ai/) — an African NLP platform I'd like to integrate in a future version.
+
+The African tech market gap — where global solutions don't address local needs — is the core entrepreneurial lens behind this project.
+
+---
+
+## Frontend Repo
+
+https://github.com/LindokuhleKubeka/vulacareerai-frontend
+
+---
+
+*Built by Lindokuhle Kubeka — WeThinkCode_ graduate, KCNA certified, AI & Backend Engineer*
+*GitHub: https://github.com/LindokuhleKubeka*
+*LinkedIn: https://linkedin.com/in/lindokuhle-kubeka-355922220*
